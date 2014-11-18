@@ -137,6 +137,10 @@ public class ChatBox : MonoBehaviour {
 	}
 
 	private void updateText() {
+		if (textBuffer == null) {
+			textBuffer = new List<char>();
+		}
+
 		if (textBuffer.Count < 1) {
 			textPlaying = false;
 			return;

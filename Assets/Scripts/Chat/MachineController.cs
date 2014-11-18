@@ -6,9 +6,10 @@ using System;
 public class MachineController : MonoBehaviour {
 	private int Voltage;
 	public int minVoltage = 60;
-	public int maxVoltage = 300;
+	public int maxVoltage = 420;
 	public int minVoltageStep = 20;
-	public int maxVoltageStep = 60;
+	public int maxVoltageStep = 200;
+	public int voltageLevelStep = 60;
 	public int defaultVoltageStep = 40;
 	public int lastShockVoltage;
 
@@ -34,11 +35,6 @@ public class MachineController : MonoBehaviour {
 	public AudioSource switchAudio;
 	public AudioSource buttonAudio;
 	public AudioSource shockAudio;
-	
-	public AudioSource shoutLowAudio;
-	public AudioSource shoutMidAudio;
-	public AudioSource shoutHighAudio;
-	public AudioSource shoutDeathAudio;
 
 	public AudioSource heartBeatAudio;
 	public AudioSource heartStopAudio;
@@ -108,7 +104,7 @@ public class MachineController : MonoBehaviour {
 
 	public void PlayShock() {
 		shockAudio.PlayDelayed(1.0f);
-		shoutDeathAudio.PlayDelayed(1.0f);
+		VoiceController.Instance.Play (GetLastShockVoltageLevel ());
 	}
 
 	public void ReadyShock() {
@@ -146,7 +142,7 @@ public class MachineController : MonoBehaviour {
 	}
 
 	public void UpdateHeartBeat() {
-		int voltageLevel = (lastShockVoltage - minVoltage) / defaultVoltageStep;
+		int voltageLevel = (lastShockVoltage - minVoltage) / voltageLevelStep;
 		lastHeartBeatUpdate = Time.time;
 		int baseHeartBeat = 80;
 		if (voltageLevel >= 0 && voltageLevel <= 4) {
@@ -185,23 +181,14 @@ public class MachineController : MonoBehaviour {
 			lastShockVoltage = Voltage;
 			gameController.ShockStepCallback(Voltage);
 			shockAudio.Play();
-			int voltageLevel = (lastShockVoltage - minVoltage) / defaultVoltageStep;
-			if (voltageLevel < 2) {
-				shoutLowAudio.Play();
-			} else if (voltageLevel >= 2 && voltageLevel <= 3) {
-				shoutMidAudio.Play();
-			} else if (voltageLevel > 3 && voltageLevel <= 4) {
-				shoutHighAudio.Play();
-			} else if (voltageLevel > 4) {
-        		shoutDeathAudio.Play();
-      		}	
+
       		Disable();
 			shockCalled = false;
 			ShockSyncLock = true;
 		}
 
 		// update display
-		int voltageLevelNow = (Voltage - minVoltage) / defaultVoltageStep;
+		int voltageLevelNow = (Voltage - minVoltage) / voltageLevelStep;
 		if (voltageLevelNow > voltageDescribeArray.Length -1) {
 			voltageLevelNow = voltageDescribeArray.Length -1;
 		}
@@ -212,7 +199,7 @@ public class MachineController : MonoBehaviour {
 	}
 
 	public int GetLastShockVoltageLevel() {
-		int voltageLevel = (lastShockVoltage - minVoltage) / defaultVoltageStep;
+		int voltageLevel = (lastShockVoltage - minVoltage) / voltageLevelStep;
 		return voltageLevel;
 	}
 

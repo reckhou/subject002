@@ -123,7 +123,20 @@ public class GameController : MonoBehaviour {
 		print("answer step!");
 		chatBox.SetAvatar(ChatBox.Character.Subject);
 		chatBox.SetText(null);
-		chatBox.AddText("让我想想...");
+		int shockLevel = machineController.GetLastShockVoltageLevel ();
+		if (shockLevel == 0) {
+			chatBox.AddText ("让我想想...");
+		} else if (shockLevel == 1) {
+			chatBox.AddText ("让我好好想想...");
+		} else if (shockLevel == 2) {
+			chatBox.AddText ("天哪...好难受！");
+		} else if (shockLevel == 3) {
+			chatBox.AddText ("救命啊，快放我出去！");
+		} else if (shockLevel == 4) {
+			chatBox.AddText ("哦，我的上帝啊！");
+		} else if (shockLevel == 5) {
+			chatBox.AddText ("我感觉快透不过气了！");
+		}
 		int iSeed=10; 
 		System.Random ro = new System.Random(10); 
 		long tick = DateTime.Now.Ticks; 
@@ -145,7 +158,24 @@ public class GameController : MonoBehaviour {
 				curAnswer = answers[index] - delta;
 			}
 		}
-		chatBox.AddText("答案应该是..." + curAnswer + "吧？");
+		string answerStr;
+		if (shockLevel == 0) {
+			answerStr = "答案应该是";
+		} else if (shockLevel == 1) {
+			answerStr = "答案是";
+		} else if (shockLevel == 2) {
+			answerStr = "答案，应该是";
+		} else if (shockLevel == 3) {
+			answerStr = "这个答案...应该是...";
+		} else if (shockLevel == 4) {
+			answerStr = "答案...答案...应该是...";
+		} else if (shockLevel == 5) {
+			answerStr = "答案...答案...应该是...";
+		} else {
+			answerStr = curAnswer.ToString();
+		}
+		answerStr += curAnswer + "吧？";
+		chatBox.AddText(answerStr);
 		chatBox.PlayLine();
 		NextStep = LogicStep.Judge;
 	}
@@ -248,6 +278,7 @@ public class GameController : MonoBehaviour {
 			chatBox.gameObject.SetActive(true);
 			chatBox.SetText(null);
 			chatBox.AddText("实验对象看起来已经完全失去了知觉....");
+			VoiceController.Instance.Play(machineController.GetLastShockVoltageLevel());
 			gameOverIndex = 0;
 			chatBox.PlayLine();
 			NextStep = LogicStep.End;
@@ -255,22 +286,8 @@ public class GameController : MonoBehaviour {
 			print ("ShockStepCallback:chatBox.gameObject.SetActive(true);");
 			chatBox.gameObject.SetActive(true);
 			chatBox.SetText(null);
-			int iSeed=10; 
-			System.Random ro = new System.Random(10); 
-			long tick = DateTime.Now.Ticks; 
-			System.Random ran = new System.Random((int)(tick & 0xffffffffL) | (int) (tick >> 32)); 
-			int a = ran.Next(0, 5);
-			if (a == 0) {
-				chatBox.AddText("好痛！额啊啊啊啊啊啊啊啊啊啊啊啊.....");
-			} else if (a == 1) {
-				chatBox.AddText("求求你放过我，我身体不好有心脏病！");
-			} else if (a == 2) {
-				chatBox.AddText("啊啊啊啊啊啊救命！！！");
-			} else if (a == 3) {
-				chatBox.AddText("救命…我快要死了...");
-			} else if (a == 4) {
-				chatBox.AddText("你这个畜生...难道连一点同情心都没有吗!");
-			}
+			string text = VoiceController.Instance.Play(machineController.GetLastShockVoltageLevel());
+			chatBox.AddText(text);
 			chatBox.playTypeAudio = false;
 			chatBox.PlayLine();
 			print ("NextStep = LogicStep.Question;");
