@@ -7,8 +7,8 @@ public class BeatObjectBg : BeatObject {
 
 	public override void Beat() {
 		base.Beat();
-		Material[] curMaterials = this.renderer.materials;
+		Material[] curMaterials = this.GetComponent<Renderer>().materials;
 		curMaterials[0].color = colors[curBeat % colors.Count];
-		this.renderer.materials = curMaterials;
+		this.GetComponent<Renderer>().materials = curMaterials;
 	}
 }

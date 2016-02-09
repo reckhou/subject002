@@ -48,15 +48,15 @@ public class moonMover : MonoBehaviour {
 				GameObject envl = GameObject.FindGameObjectWithTag("envLight");
 
 				if (ml != null) {
-					ml.light.intensity = Mathf.Lerp(ml.light.intensity, moonLight, lightSmooth * Time.deltaTime);
+					ml.GetComponent<Light>().intensity = Mathf.Lerp(ml.GetComponent<Light>().intensity, moonLight, lightSmooth * Time.deltaTime);
 				}
 
 				if (mlb != null) {
-					mlb.light.intensity = Mathf.Lerp(mlb.light.intensity, moonLightBack, lightSmooth * Time.deltaTime);
+					mlb.GetComponent<Light>().intensity = Mathf.Lerp(mlb.GetComponent<Light>().intensity, moonLightBack, lightSmooth * Time.deltaTime);
 				}
 
 				if (envl != null) {
-					envl.light.intensity = Mathf.Lerp(envl.light.intensity, envLight, lightSmooth * Time.deltaTime);
+					envl.GetComponent<Light>().intensity = Mathf.Lerp(envl.GetComponent<Light>().intensity, envLight, lightSmooth * Time.deltaTime);
 				}
 
 //				float intensityPerStep = moonLightBack / spawnTime;

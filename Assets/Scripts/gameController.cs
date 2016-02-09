@@ -32,7 +32,7 @@ public class gameController : MonoBehaviour {
 		while (!lampOn) {
 			GameObject[] lights = GameObject.FindGameObjectsWithTag("lampLight");
 			foreach (GameObject lmpl in lights) {
-			  lmpl.light.intensity = 5;
+			  lmpl.GetComponent<Light>().intensity = 5;
 			}
 			lampOn = true;
 			yield return new WaitForSeconds(1);
@@ -55,7 +55,7 @@ public class gameController : MonoBehaviour {
 				float endX = Random.Range (-endXRange, endXRange);
 //				Debug.Log(spawnPoint.x+"_"+endX);
 				newMob.GetComponent<mobMover>().deltaX = endX - spawnPoint.x;
-				newMob.renderer.sortingOrder = curOrder;
+				newMob.GetComponent<Renderer>().sortingOrder = curOrder;
 				curOrder--;
 			 	camera.GetComponent<camLookAt>().target = newMob.transform;
 				yield return new WaitForSeconds (spawnWait);

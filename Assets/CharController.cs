@@ -41,7 +41,7 @@ public class CharController : MonoBehaviour {
 			transform.Translate(Vector3.right * Time.deltaTime * speed);
 		} else if (status == (int)Status.jump) {
 			status = (int)Status.idle;
-			rigidbody2D.AddForce(Vector2.up * jumpForce);
+			GetComponent<Rigidbody2D>().AddForce(Vector2.up * jumpForce);
 //			Rigidbody2D body = GetComponent<Rigidbody2D>();
 //			body.AddForce(Vector2.up);
 //			transform.Translate(Vector3.up * Time.deltaTime * speed);

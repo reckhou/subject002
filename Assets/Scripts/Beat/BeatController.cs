@@ -55,7 +55,7 @@ public class BeatController : MonoBehaviour {
 		}
 
 		AudioClip clip = Resources.Load("Musics/"+GlobalConfig.Music) as AudioClip;
-		audio.clip = clip;
+		GetComponent<AudioSource>().clip = clip;
 
 		// init all beat objects
 		updateNextBarTime();
@@ -67,8 +67,8 @@ public class BeatController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!audio.isPlaying) {
-			audio.Play();
+		if (!GetComponent<AudioSource>().isPlaying) {
+			GetComponent<AudioSource>().Play();
 		}
 		curTime += Time.deltaTime;
 		if (updateCnt != 0) {
