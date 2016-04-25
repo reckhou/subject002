@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 
 public class VoiceController : MonoBehaviour {
-	public Dictionary<int, Dictionary<int, AudioSource>> Audios;
+    public Dictionary<int, AudioSource> Audios;
 	public Dictionary<int, Dictionary<int, string>> AudioTexts;
 	private static VoiceController instance;
 	public static VoiceController Instance {
@@ -23,23 +23,27 @@ public class VoiceController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Audios = new Dictionary<int, Dictionary<int, AudioSource>> ();
+		Audios = new Dictionary<int, AudioSource>();
 		AudioTexts = new Dictionary<int, Dictionary<int, string>> ();
 		AudioSource[] sources = transform.GetComponents<AudioSource>();
 		foreach (AudioSource tmpSource in sources) {
 			string name = tmpSource.clip.name;
-			string[] parseArray = name.Split('_');
-			if (parseArray.Length < 3) {
+            string[] parseArray = name.Split('_');
+			if (parseArray.Length < 2) {
 				continue;
 			}
-
-			int group = int.Parse(parseArray[1]);
+            if (parseArray[0] != "shout")
+            {
+                continue;
+            }
+            int level = int.Parse(parseArray[1]);
+			/*int group = int.Parse(parseArray[1]);
 			int id = int.Parse(parseArray[2]);
 
 			if (!Audios.ContainsKey(group)) {
 				Audios[group] = new Dictionary<int, AudioSource>();
-			}
-			Audios[group][id] = tmpSource;
+			}*/
+            Audios[level] = tmpSource;
 		}
 
 		AudioTexts [0] = new Dictionary<int, string> ();
@@ -92,18 +96,38 @@ public class VoiceController : MonoBehaviour {
 	} else {
 			uid = 0;		
 		}
+
 		print (level+"_"+uid);
 		Dictionary <int, string> dict = AudioTexts [level];
 		if (!dict.ContainsKey(uid)) {
-			print ("AudioTexts"+level.ToString()+"_"+uid.ToString()+" not found!");
+			print ("AudioTexts "+level.ToString()+"_"+uid.ToString()+" not found!");
 			return "ERROR: 404 NOT FOUND";
 		}
 
-		if (Audios.ContainsKey(level) && Audios [level].ContainsKey(uid)) {
-			Audios [level] [uid].Play ();
+        int shoutLevel = 0;
+        if (level == 0)
+        {
+            shoutLevel = 0;
+        } else if (level == 1 || level == 2)
+        {
+            shoutLevel = 1;
+        } else if (level == 3)
+        {
+            shoutLevel = 2;
+        } else if (level == 5)
+        {
+            shoutLevel = 3;
+        } else
+        {
+            shoutLevel = -1;
+        }
+
+		if (Audios.ContainsKey(shoutLevel)) {
+			Audios [shoutLevel].Play ();
 	} else {
 			print ("Audio"+level+"_"+uid+" not found!");
 		}
+
 
 		return AudioTexts [level] [uid];
 	}
