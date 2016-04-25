@@ -23,7 +23,7 @@ public class startSceneController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown("space")) {
-			Application.LoadLevel("testScene");
+			Application.LoadLevel("mainScene");
 		}
 
 		if (Time.time - lastFlashUpdate > flashDeltaTime) {
