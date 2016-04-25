@@ -23,3 +23,5 @@ Assembly-UnityScript.unityproj
 subject002-csharp.sln
 subject002.sln
 subject002.userprefs
+.vs/
+*.csproj
