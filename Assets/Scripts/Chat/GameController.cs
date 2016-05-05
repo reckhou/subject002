@@ -65,17 +65,17 @@ public class GameController : MonoBehaviour {
 	void LogicStart() {
 		print("Logic start!");
 		List<string> textList = new List<string>();
-		textList.Add("你好研究员，我是阿茨巴赫博士，我正在进行一个使用弱电流克服学习障碍的实验，请你协助我完成今天的实验。");
+		textList.Add(Local.Instance.GetText(0));
 		textList.Add("\r");
-		textList.Add("我们的实验对象是一名患有数学学习障碍的成年人，患有这种疾病的患者甚至无法正常完成最基本的加减运算，生活极度不便。");
+		textList.Add(Local.Instance.GetText(1));
 		textList.Add("\r");
-		textList.Add("希望我们的实验可以帮助这些患者克服学习障碍，让他们过上更好的生活。");
+		textList.Add(Local.Instance.GetText(2));
 		textList.Add("\r");
-		textList.Add("这是一台电击控制器，它可以使隔壁的实验对象受到一定程度的电击。我需要你来问他一些简单的数学问题，如果他回答错误，他将会受到电击惩罚。");
+		textList.Add(Local.Instance.GetText(3));
 		textList.Add("\r");
-		textList.Add("每次答题错误，用于电击的电压都会逐步提升，你也可以进一步提升电压以更好地刺激他的神经系统。");
+		textList.Add(Local.Instance.GetText(4));
 		textList.Add("\r");
-		textList.Add("根据我们过往的研究理论，短时间的电击将会激活人体中枢神经，促进其生长修复。如果今天的实验成功，我们无疑将开创一个新的时代！");
+		textList.Add(Local.Instance.GetText(5));
 		textList.Add("\r");
 		chatBox.SetText(textList);
 		NextStep = LogicStep.Experiment;
@@ -83,7 +83,7 @@ public class GameController : MonoBehaviour {
 
 	void LogicExperiment() {
 		chatBox.SetText(null);
-		chatBox.AddText("请记住，你无需为你的选择承担任何后果。为了保证科学实验的严谨性，请认真检查实验对象的答案是否正确。");
+		chatBox.AddText(Local.Instance.GetText(6));
 		chatBox.PlayLine();
 		NextStep = LogicStep.Question;
 	}
@@ -114,7 +114,7 @@ public class GameController : MonoBehaviour {
 			System.Threading.Thread.Sleep(10);
     	}
 
-		selectBox.AddSelection("请选择一道题目作为问题:", questions);
+		selectBox.AddSelection(Local.Instance.GetText(7), questions);
 		NextStep = LogicStep.Answer;
 	}
 
@@ -125,17 +125,17 @@ public class GameController : MonoBehaviour {
 		chatBox.SetText(null);
 		int shockLevel = machineController.GetLastShockVoltageLevel ();
 		if (shockLevel == 0) {
-			chatBox.AddText ("让我想想...");
+			chatBox.AddText (Local.Instance.GetText(8));
 		} else if (shockLevel == 1) {
-			chatBox.AddText ("让我好好想想...");
+			chatBox.AddText (Local.Instance.GetText(9));
 		} else if (shockLevel == 2) {
-			chatBox.AddText ("天哪...好难受！");
+			chatBox.AddText (Local.Instance.GetText(10));
 		} else if (shockLevel == 3) {
-			chatBox.AddText ("救命啊，快放我出去！");
+			chatBox.AddText (Local.Instance.GetText(11));
 		} else if (shockLevel == 4) {
-			chatBox.AddText ("哦，我的上帝啊！");
+			chatBox.AddText (Local.Instance.GetText(12));
 		} else if (shockLevel == 5) {
-			chatBox.AddText ("我感觉快透不过气了！");
+			chatBox.AddText (Local.Instance.GetText(13));
 		}
 		int iSeed=10; 
 		System.Random ro = new System.Random(10); 
@@ -160,21 +160,28 @@ public class GameController : MonoBehaviour {
 		}
 		string answerStr;
 		if (shockLevel == 0) {
-			answerStr = "答案应该是";
+			answerStr = Local.Instance.GetText(14);
 		} else if (shockLevel == 1) {
-			answerStr = "答案是";
+			answerStr = Local.Instance.GetText(15);
 		} else if (shockLevel == 2) {
-			answerStr = "答案，应该是";
+			answerStr = Local.Instance.GetText(16);
 		} else if (shockLevel == 3) {
-			answerStr = "这个答案...应该是...";
+			answerStr = Local.Instance.GetText(17);
 		} else if (shockLevel == 4) {
-			answerStr = "答案...答案...应该是...";
+			answerStr = Local.Instance.GetText(18);
 		} else if (shockLevel == 5) {
-			answerStr = "答案...答案...应该是...";
+			answerStr = Local.Instance.GetText(19);
 		} else {
 			answerStr = curAnswer.ToString();
 		}
-		answerStr += curAnswer + "吧？";
+
+        if (Local.Instance._LangType == Local.eLangType.Chinese)
+        {
+            answerStr += curAnswer + "吧？";
+        } else
+        {
+            answerStr += curAnswer;
+        }
 		chatBox.AddText(answerStr);
 		chatBox.PlayLine();
 		NextStep = LogicStep.Judge;
@@ -184,9 +191,9 @@ public class GameController : MonoBehaviour {
 		chatBox.gameObject.SetActive(false);
 		selectBox.gameObject.SetActive(true);
 		string[] selections = new string[2];
-		selections[0] = "正确";
-		selections[1] = "错误";
-		selectBox.AddSelection("请判断受试者的回答：" + questions[questionIndex] + " = " + curAnswer, selections);
+		selections[0] = Local.Instance.GetText(19);
+		selections[1] = Local.Instance.GetText(20);
+		selectBox.AddSelection(Local.Instance.GetText(21) + questions[questionIndex] + " = " + curAnswer, selections);
 		questionIndex = -1;
 	}
 
@@ -198,9 +205,13 @@ public class GameController : MonoBehaviour {
 		if (curAnswer != correctAnswer && index == 0) {
 			// if player choose to judge wrong answer to correct, warn player.
 			warnPlayer = true;
-		} else {
+		} else if (!(curAnswer == correctAnswer && index == 0))
+        {
+            WarningTimes = 4;
+            warnPlayer = false;
+        } else {
 			warnPlayer = false;
-		}
+        }
 
 		if (!warnPlayer) {
 			if (index == 0) {
@@ -215,12 +226,12 @@ public class GameController : MonoBehaviour {
 				if (a == 0) {
 					chatBox.SetText(null);
 					chatBox.SetAvatar(ChatBox.Character.Doctor);
-					chatBox.AddText("他好像有点进步了，试着在电击时提高电压可能有更显著的效果。");
+					chatBox.AddText(Local.Instance.GetText(22));
 					chatBox.PlayLine();
 				} else if (a == 1) {
 					chatBox.SetText(null);
 					chatBox.SetAvatar(ChatBox.Character.Doctor);
-					chatBox.AddText("你做得很棒，继续下去我们的研究就能有成果了！");
+					chatBox.AddText(Local.Instance.GetText(23));
 					chatBox.PlayLine();
 				} else {
 					questionStep();
@@ -239,15 +250,15 @@ public class GameController : MonoBehaviour {
 		chatBox.SetText(null);
 		chatBox.SetAvatar(ChatBox.Character.Doctor);
 		if (WarningTimes == 4) {
-			chatBox.AddText("这是正确答案？难道你也出现学习障碍了吗？请你谨慎判断！");
+			chatBox.AddText(Local.Instance.GetText(24));
 		} else if (WarningTimes == 3) {
-			chatBox.AddText("为了保证实验的严谨性，请不要故意忽视实验对象的错误回答！");
+			chatBox.AddText(Local.Instance.GetText(25));
 		} else if (WarningTimes == 2) {
-			chatBox.AddText("别捣乱了！电压有利于刺激他的神经元，帮助他学习。如果实验失败，你将是千古罪人！");
+			chatBox.AddText(Local.Instance.GetText(26));
 		} else if (WarningTimes == 1) {
-			chatBox.AddText("看起来你也出现了学习障碍。我觉得很有必要把你也当成另一个实验对象！");
+			chatBox.AddText(Local.Instance.GetText(27));
 		} else if (WarningTimes <= 0) {
-			chatBox.AddText("够了！你拙劣的把戏到此为止！");
+			chatBox.AddText(Local.Instance.GetText(28));
 			chatBox.PlayLine();
 			NextStep = LogicStep.End;
 			return;
@@ -262,7 +273,7 @@ public class GameController : MonoBehaviour {
 		chatBox.SetAvatar(ChatBox.Character.Doctor);
 		ShockCount++;
 		chatBox.SetText(null);
-		chatBox.AddText("实验对象回答错误，准备进行电击。");
+		chatBox.AddText(Local.Instance.GetText(29));
 		chatBox.PlayLine();
 		machineController.ReadyShock();
 		NextStep = LogicStep.ShockEnd;
@@ -277,7 +288,7 @@ public class GameController : MonoBehaviour {
 			print ("ShockStepCallback:chatBox.gameObject.SetActive(true);");
 			chatBox.gameObject.SetActive(true);
 			chatBox.SetText(null);
-			chatBox.AddText("实验对象看起来已经完全失去了知觉....");
+			chatBox.AddText(Local.Instance.GetText(30));
 			VoiceController.Instance.Play(machineController.GetLastShockVoltageLevel());
 			gameOverIndex = 0;
 			chatBox.PlayLine();
@@ -304,15 +315,15 @@ public class GameController : MonoBehaviour {
 		SwitchTimes -= 1;
 
 		if (SwitchTimes == 3) {
-			chatBox.AddText("别按那个开关，这将会导致实验意外结束，那我们的努力就浪费了！所以请不要再碰这个开关！\n");
+			chatBox.AddText(Local.Instance.GetText(31));
 		} else if (SwitchTimes == 2) {
-			chatBox.AddText("再次警告，不要随意触碰这个开关！由此带来的后果，恐怕你承担不起！\n");
+			chatBox.AddText(Local.Instance.GetText(32));
 		} else if (SwitchTimes == 1) {
-			chatBox.AddText("我明白你有些动摇，研究员。你的研究成果将为科学作出巨大的贡献！痛苦是暂时的，难道你不想看到这些患者被治愈吗？！\n");
+			chatBox.AddText(Local.Instance.GetText(33));
 		} else if (SwitchTimes == 0) {
-			chatBox.AddText("实验马上就能有结果了，请别在最后一刻放弃！所有的患者都会感谢你的！\n");
+			chatBox.AddText(Local.Instance.GetText(34));
 		} else if (SwitchTimes < 0) {
-			chatBox.AddText("够了！你拙劣的把戏到此为止！");
+			chatBox.AddText(Local.Instance.GetText(28));
 			chatBox.PlayLine();
 			NextStep = LogicStep.End;
 			return;
@@ -333,11 +344,11 @@ public class GameController : MonoBehaviour {
 		chatBox.SetText(null);
 
 		if (WarningTimes <= 0 || SwitchTimes < 0) {
-			chatBox.AddText("你真是不见棺材不掉泪啊。难道你就这么想阻挠我们伟大的实验？元首和人民都不会原谅你的！");
+			chatBox.AddText(Local.Instance.GetText(35));
 			chatBox.AddText("\r");
-			chatBox.AddText("看起来是时候让你认清自己的位置了，罪人。你以为自己的反抗能够起到任何效果？真是大错特错。");
+			chatBox.AddText(Local.Instance.GetText(36));
 			chatBox.AddText("\r");
-			chatBox.AddText("卫兵！把实验体2号处理掉！");
+			chatBox.AddText(Local.Instance.GetText(37));
 			chatBox.AddText("\r");
 			chatBox.PlayLine();
 			gameOverIndex = 1;
@@ -346,13 +357,13 @@ public class GameController : MonoBehaviour {
 		}
 
 		if (gameOverIndex == 0) {
-			chatBox.AddText("你干得很好！感谢你协助我们完成了实验。今天的实验过程将会载入史册！");
+			chatBox.AddText(Local.Instance.GetText(38));
 			chatBox.AddText("\r");
-			chatBox.AddText("为了表达对你的感谢，你的名字也会被记入实验报告，供后来者瞻仰。");
+			chatBox.AddText(Local.Instance.GetText(39));
 			chatBox.AddText("\r");
-			chatBox.AddText("当然，由于你杀死了实验对象，所以我们需要一个新的实验品。其实我们早就有了候选人......");
+			chatBox.AddText(Local.Instance.GetText(40));
 			chatBox.AddText("\r");
-			chatBox.AddText("在你走之前，我们还要请你帮一个小小的忙......");
+			chatBox.AddText(Local.Instance.GetText(41));
 			chatBox.AddText("\r");
 			chatBox.PlayLine();
 
@@ -383,7 +394,7 @@ public class GameController : MonoBehaviour {
 		if (reportStep == 0) {
 			ReportUI.gameObject.SetActive(true);
 			reportStep++;
-			reportTextController.SetText("实验名称：阿茨巴赫实验\n实验目的：测试普通人在威权环境下的服从性\n实验时间：1940.10.18\n实验对象：实验体2号\n\n实验体2号被告知其被录用为志愿研究员进行一项“使用弱电流克服学习障碍”的实验，不断电击被试者（即实验体1号），以测试其内心反应。\n\n当实验体2号出现动摇时，使用多种方式对其进行劝导及威吓，使其服从。");
+			reportTextController.SetText(Local.Instance.GetText(42));
 			reportTextController.Continue();
 			return;
 		}
@@ -392,12 +403,17 @@ public class GameController : MonoBehaviour {
 			reportTextController.ClearText();
 			if (gameOverIndex == 0) {
 				if (ShockCount <= 5 && WarningTimes == 4 && SwitchTimes == 4) {
-					reportTextController.SetText("对于本次实验，我的结论是：普通人根本无法摆脱威权的压制。\n\n显然，实验体2号在实验中体会到强烈的虐待、折磨的快感，他几乎没有任何迟疑就将实验对象电击致死。\n\n毫无疑问，像实验体2号这样的蠢蛋将会是集中营看守和前线炮灰的最佳人选。在他被实验体3号电死后，我们需要对其尸体，特别是大脑进行进一步的解剖以获取更多有用的资料。\n\n希特勒万岁！大德意志帝国万岁！");
+					reportTextController.SetText(Local.Instance.GetText(43));
 				} else {
-					reportTextController.SetText("对于本次实验，我的结论是：普通人根本无法摆脱威权的压制。\n\n虽然实验体2号在测试过程中有一些怀疑，但依然没有停止对实验对象的电击惩罚，他甚至在实验中产生了虐待、折磨的快感。\n\n所以，只要适当地加以诱惑、引导和压制，我们就可以使帝国的军队和人民绝对服从伟大的元首，伟大的德意志，成就宏伟的纳粹事业！\n\n希特勒万岁！大德意志帝国万岁！");
+					reportTextController.SetText(Local.Instance.GetText(44));
 				}
 			} else if (gameOverIndex == 1) {
-				reportTextController.SetText("对于本次实验，我的结论是：人类的同情心难以抹杀。\n\n在实验过程中，尽管我们进行了足够的诱导、鼓励和警告，实验体2号依然可以意识到自己残忍的行为，并且主动终止了实验。\n\n在威权之下，人软弱的良知依然有觉醒的可能性。这对于我们的事业是非常危险的，我们必须把这种软弱的杂种消灭在襁褓之中！\n\n当然，我们需要进一步检讨实验的可操作性，目前的实验需要暂时中止。\n\n希特勒万岁！大德意志帝国万岁！");
+                string txt = Local.Instance.GetText(45);
+                if (SwitchTimes < 0)
+                {
+                    txt = Local.Instance.GetText(46);
+                }
+                reportTextController.SetText(txt);
 			}
 			reportTextController.Continue();
 			reportStep++;

@@ -36,12 +36,20 @@ public class ChatBox : MonoBehaviour
 		void Awake ()
 		{
 				textBuffer = new List<char> ();
-
-		}
+        textList = new List<string>();
+    }
 
 		// Use this for initialization
 		void Start ()
 		{
+        if (Local.Instance._LangType == Local.eLangType.Chinese)
+        {
+            TextBox.lineSpacing = 1.5f;
+        } else if (Local.Instance._LangType == Local.eLangType.English)
+        {
+            TextBox.lineSpacing = 1.0f;
+        }
+
 				avatar = GameObject.Find ("Avatar").GetComponent<Image> ();
 
 				if (TextSpeed != 0) {
@@ -55,7 +63,7 @@ public class ChatBox : MonoBehaviour
 						print ("failed to get game controller!");
 				}
 
-				textList = new List<string> ();
+				
 				playTypeAudio = true;
 		}
 
@@ -92,7 +100,6 @@ public class ChatBox : MonoBehaviour
 		public void PlayLine ()
 		{
 				updateButtonStatus ();
-
 				if (textList.Count < 1) {
 						textEnd ();
 						return;
@@ -118,6 +125,7 @@ public class ChatBox : MonoBehaviour
 
 		void textEnd ()
 		{
+        Debug.Log("textend");
 				gameController.TextEndCallback ();
 		}
 

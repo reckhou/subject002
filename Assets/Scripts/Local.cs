@@ -17,10 +17,6 @@ public class Local : HLSingleton<Local> {
     void Awake()
     {
         DontDestroyOnLoad(transform.gameObject);
-    }
-
-    // Use this for initialization
-    void Start () {
         TextAsset asset = Resources.Load("localization") as TextAsset;
         if (asset == null)
         {
@@ -29,6 +25,11 @@ public class Local : HLSingleton<Local> {
         }
         _LocalList = new List<List<string>>();
         CSVWorker.Format(asset.text, ref _LocalList);
+    }
+
+    // Use this for initialization
+    void Start () {
+       
         DebugAsset();
 
     }
@@ -59,8 +60,17 @@ public class Local : HLSingleton<Local> {
         Debug.Log(strBuilder.ToString());
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	public string GetText(int ID)
+    {
+        int index = 0;
+        if (_LangType == eLangType.Chinese)
+        {
+            index = 1;
+        } else if (_LangType == eLangType.English)
+        {
+            index = 2;
+        }
+
+        return _LocalList[ID][index];
+    }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 
 public class startSceneController : MonoBehaviour {
 
-	public Image FlashText;
+	public GameObject FlashText;
 	public float FlashSpeed;
 
 	private float lastFlashUpdate;
@@ -18,7 +18,15 @@ public class startSceneController : MonoBehaviour {
 			FlashSpeed = 1;
 		}
 		flashDeltaTime = 1 / FlashSpeed;
-	}
+
+        if (Local.Instance._LangType == Local.eLangType.English)
+        {
+            FlashText.GetComponent<Text>().text = "Press SPACE to Begin Experiment";
+        } else if (Local.Instance._LangType == Local.eLangType.Chinese)
+        {
+            FlashText.GetComponent<Text>().text = "按 SPACE 键开始实验";
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {

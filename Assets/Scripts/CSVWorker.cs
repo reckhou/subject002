@@ -6,28 +6,37 @@ public static class CSVWorker {
 
 	public static void Format(string input, ref List<List<string>> outputList)
     {
+        input = input.Replace("\r", "");
         string[] sArray = input.Split('\n');
         foreach (string str in sArray)
         {
             List<string> list = new List<string>();
             string[] sElements = str.Split(',');
-            foreach (string cur in sElements)
+            for (int i = 0; i < sElements.Length; i++)
             {
-                string result = cur;
+                string result = sElements[i];
                 if (result.StartsWith("\""))
                 {
                     result = result.TrimStart('\"');
+                    while (i < sElements.Length - 1)
+                    {
+                        i++;
+                        
+                        if (!sElements[i].EndsWith("\""))
+                        {
+                            result += "," + sElements[i];
+                        } else
+                        {
+                            result += "," + sElements[i].TrimEnd('\"');
+                            break;
+                        }
+                    }
+                    result = result.Replace("\"\"", "\""); 
                 }
 
-                if (result.EndsWith("\""))
-                {
-                    result = result.TrimEnd('\"');
-                }
-
-                result = result.Replace("\"\"", "\"");
                 list.Add(result);
             }
-
+            
             outputList.Add(list);
         }
     }
