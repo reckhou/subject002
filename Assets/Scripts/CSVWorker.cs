@@ -32,7 +32,7 @@ public static class CSVWorker
           }
           result = result.Replace ("\"\"", "\""); 
         }
-
+        result = result.Replace ("\\n", "\n");
         list.Add (result);
       }
             

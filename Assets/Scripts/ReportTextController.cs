@@ -38,7 +38,6 @@ public class ReportTextController : MonoBehaviour
 
   public void SetText (string text)
   {
-    text = text.Replace ("\\n", "\n");
     textBuffer = new List<char> (text.ToCharArray ());
     GetComponent<Text> ().text = "";
   }

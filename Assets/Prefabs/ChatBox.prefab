@@ -400,14 +400,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TextBox: {fileID: 11400000}
-  TextSpeed: 100
+  TextSpeed: 200
   DoctorAvatar: {fileID: 21300000, guid: de39bd1f45e0c4af39ab0d4d8da3bd76, type: 3}
   SubjectAvatar: {fileID: 21300000, guid: 88e7f1c0216674b3fa7e524bfa203ef8, type: 3}
   pressAudio: {fileID: 8200000}
   typeAudio: {fileID: 8200002}
   nextButton: {fileID: 11400002}
   playTypeAudio: 0
-  isDebug: 1
+  isDebug: 0
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1
